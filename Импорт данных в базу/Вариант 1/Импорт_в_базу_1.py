@@ -1,40 +1,21 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# #### Простой случай
-# 
+# Простой случай
 # У нас только один файл с данными, который нужно залить в базу.
 
-# In[1]:
-
-
+# импортируем все нужные библиотеки для выполения кода
 import pandas as pd
 import pyodbc
 
-
-# In[ ]:
-
+# Для конвертации расширения .ipynb в .py прописываем в командной строке:
+# jupyter nbconvert Импорт_в_базу_1.ipynb --to script
 
 # укажем, где хранится файл
 path = 'excel.xlsx'
 
-
-# In[ ]:
-
-
 # загрузим данные в df
 df = pd.read_excel(path) # sheet_name=1, skiprows=6, usecols='F:W' - дополнительные условия
 
-
-# In[ ]:
-
-
 # покажем первые пять строк
 df.head()
-
-
-# In[ ]:
-
 
 # параметры соединения с базой
 sql_server = '192.168.2.128'
@@ -42,16 +23,8 @@ database = 'analitic'
 driver = '{SQL Server Native Client 10.0}'
 conn_string = f'SERVER={sql_server};DATABASE={database};DRIVER={driver};Trusted_connection=Yes'
 
-
-# In[ ]:
-
-
 # устанавливаем соединение с базой
 conn = pyodbc.connect(conn_string)
-
-
-# In[ ]:
-
 
 # создаем таблицу в базе
 with conn.cursor() as cur:
@@ -84,29 +57,15 @@ with conn.cursor() as cur:
 # In[ ]:
 
 
-get_ipython().run_cell_magic('time', '', "# вносим данные в базу\nwith conn.cursor() as cur:\n    for row in df.itertuples(name=None, index=False):\n        insert_query = '''INSERT INTO tander_x5 VALUES{}'''.format(row)\n        cur.execute(insert_query)")
-
-
-# In[ ]:
-
+#%%time
+# вносим данные в базу
+with conn.cursor() as cur:
+    for row in df.itertuples(name=None, index=False):
+        insert_query = '''INSERT INTO tander_x5 VALUES{}'''.format(row)
+        cur.execute(insert_query)
 
 # отключаемся от базы
 conn.close()
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
 
 
 
